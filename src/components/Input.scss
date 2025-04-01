@@ -1,0 +1,139 @@
+:root {
+  --input-group-color: #99a3ba;
+  --input-group-border: #cdd9ed;
+  --input-group-background: #fff;
+  --input-group-placeholder: #cbd1dc;
+  --input-group-border-focus: #275efe;
+  --input-group-prefix-color: var(--input-group-color);
+  --input-group-prefix-border: var(--input-group-border);
+  --input-group-prefix-background: #eef4ff;
+  --input-group-prefix-color-focus: #fff;
+  --input-group-prefix-border-focus: var(--input-group-border-focus);
+  --input-group-prefix-background-focus: #678efe;
+  --input-label-color: #4e5d78;
+  --input-label-font-size: 14px;
+  --input-label-margin-bottom: 8px;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input-label {
+  color: var(--input-label-color);
+  font-size: var(--input-label-font-size);
+  font-weight: 500;
+  margin-bottom: var(--input-label-margin-bottom);
+}
+
+.input-group {
+  position: relative;
+  display: flex;
+  width: 100%;
+
+  &__field,
+  &__prefix,
+  &__suffix {
+    white-space: nowrap;
+    display: block;
+    border-radius: 0;
+
+    &:not(:first-child):not(:last-child) {
+      border-radius: 0;
+    }
+
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+  }
+
+  &__field {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 8px 8px 8px 16px;
+    line-height: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    -webkit-appearance: none;
+    color: var(--input-group-color);
+    border: 1px solid var(--input-group-border);
+    background: var(--input-group-background);
+    transition: border 0.3s ease;
+
+    &::placeholder {
+      color: var(--input-group-placeholder);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--input-group-border-focus);
+    }
+
+    &--date {
+      &::-webkit-calendar-picker-indicator {
+        border: 1px solid var(--input-group-color);
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 3px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          border-color: var(--input-group-border-focus);
+        }
+      }
+
+      &::-webkit-datetime-edit {
+        padding: 0;
+      }
+
+      &::-webkit-datetime-edit-fields-wrapper {
+        padding: 0;
+      }
+    }
+  }
+
+  &__prefix,
+  &__suffix {
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 25px;
+    color: var(--input-group-prefix-color);
+    background: var(--input-group-prefix-background);
+    border: 1px solid var(--input-group-prefix-border);
+    transition: background 0.3s ease, border 0.3s ease, color 0.3s ease;
+  }
+
+  // Gestion des border-radius pour le premier élément
+  &__field:first-child,
+  &__prefix:first-child {
+    border-radius: 6px 0 0 6px;
+  }
+
+  // Gestion des border-radius pour le dernier élément
+  &__field:last-child,
+  &__suffix:last-child {
+    border-radius: 0 6px 6px 0;
+  }
+
+  // Gestion des border-radius quand il n'y a que l'input
+  &__field:only-child {
+    border-radius: 6px;
+  }
+
+  &:focus-within {
+    .input-group__prefix,
+    .input-group__suffix {
+      color: var(--input-group-prefix-color-focus);
+      background: var(--input-group-prefix-background-focus);
+      border-color: var(--input-group-prefix-border-focus);
+    }
+  }
+}
