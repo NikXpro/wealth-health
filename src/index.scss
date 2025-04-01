@@ -1,29 +1,36 @@
 html {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 * {
   box-sizing: inherit;
+  margin: 0;
+  padding: 0;
   &:before,
   &:after {
     box-sizing: inherit;
   }
 }
 
-// Center
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   min-height: 100vh;
-  font-family: "Mukta Malar", Arial;
+  font-family: "Mukta Malar", Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   background: #f5f9ff;
-  .form-group {
-    max-width: 360px;
-    &:not(:last-child) {
-      margin-bottom: 32px;
-    }
-  }
+  line-height: 1.5;
+  color: #333;
+  overflow-x: hidden;
 }
