@@ -3,11 +3,18 @@ import "./Button.scss";
 
 interface ButtonProps {
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "success"
+    | "danger"
+    | "ghost"
+    | "ghost-icon";
   size?: "small" | "medium" | "large";
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  className?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,10 +24,11 @@ const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
   disabled = false,
+  className,
 }) => {
   return (
     <button
-      className={`button button--${variant} button--${size}`}
+      className={`button button--${variant} button--${size} ${className}`}
       type={type}
       onClick={onClick}
       disabled={disabled}
