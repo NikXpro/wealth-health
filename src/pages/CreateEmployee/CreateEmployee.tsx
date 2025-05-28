@@ -321,14 +321,14 @@ export function CreateEmployee() {
             error={errors.department}
           />
           <div className="button-container">
+            <Button type="submit" className="saveButton">
+              Save
+            </Button>
             <Link to="/" className="linkCancel">
               <Button type="button" variant="ghost" className="cancelButton">
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" className="saveButton">
-              Save
-            </Button>
           </div>
         </form>
       </div>
