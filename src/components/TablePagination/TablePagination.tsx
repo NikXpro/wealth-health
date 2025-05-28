@@ -1,5 +1,6 @@
+import { Button } from "nikx-ui";
 import React from "react";
-import "./TablePagination.scss";
+
 interface TablePaginationProps extends React.HTMLAttributes<HTMLDivElement> {
   currentPage: number;
   totalPages: number;
@@ -11,21 +12,25 @@ const TablePagination = React.forwardRef<HTMLDivElement, TablePaginationProps>(
   ({ currentPage, totalPages, onPageChange, className, ...props }, ref) => {
     return (
       <div ref={ref} className={`pagination ${className}`} {...props}>
-        <button
+        <Button
+          variant="primary"
+          size="medium"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
-        </button>
+        </Button>
         <span>
           Page {currentPage} of {totalPages}
         </span>
-        <button
+        <Button
+          variant="primary"
+          size="medium"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
           Next
-        </button>
+        </Button>
       </div>
     );
   }
