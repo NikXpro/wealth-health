@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import Button from "../../components/Button";
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/Table/Table";
-import { TablePagination } from "../../components/Table/TablePagination";
+} from "nikx-ui";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { TablePagination } from "../../components/TablePagination/TablePagination";
 import { Employee, employeeService } from "../../services/employeeService";
 import { generateTestEmployees } from "../../utils/generateTestData";
 import "./EmployeeList.scss";
