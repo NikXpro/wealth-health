@@ -1,3 +1,4 @@
+import { Button } from "nikx-ui";
 import React from "react";
 import "./Modal.scss";
 
@@ -23,9 +24,14 @@ const Modal: React.FC<ModalProps> = ({
       <div className="modal-content">
         <div className="modal-header">
           <h2>{title}</h2>
-          <button className="modal-close" onClick={onClose}>
+          <Button
+            variant="secondary"
+            size="small"
+            className="modal-close"
+            onClick={onClose}
+          >
             ×
-          </button>
+          </Button>
         </div>
         <div className={`modal-body ${className}`}>{children}</div>
       </div>
