@@ -12,6 +12,40 @@ export interface Employee {
 
 const STORAGE_KEY = "employees";
 
+// Fonction utilitaire pour gérer les wildcards
+const matchesWithWildcard = (text: string, pattern: string): boolean => {
+  // Si pas de wildcard, utiliser la recherche normale (includes)
+  if (!pattern.includes("*")) {
+    return text.toLowerCase().includes(pattern.toLowerCase());
+  }
+
+  // Convertir le pattern avec wildcards en regex
+  // caracteres speciaux
+  const escapedPattern = pattern
+    .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*/g, ".*"); // Remplacer * par .*
+
+  const regex = new RegExp(escapedPattern, "i"); // i pour case insensitive, sans ^ et $ pour permettre la correspondance partielle
+  return regex.test(text);
+};
+
+// Fonction utilitaire pour gérer les valeurs multiples (séparées par des virgules)
+const matchesMultipleValues = (text: string, values: string): boolean => {
+  // Séparer les valeurs par des virgules et nettoyer les espaces
+  const valueList = values
+    .split(",")
+    .map((v) => v.trim())
+    .filter((v) => v.length > 0);
+
+  // Si une seule valeur, utiliser la fonction normale
+  if (valueList.length === 1) {
+    return matchesWithWildcard(text, valueList[0]);
+  }
+
+  // Si plusieurs valeurs, vérifier si au moins une correspond (logique OU)
+  return valueList.some((value) => matchesWithWildcard(text, value));
+};
+
 export const employeeService = {
   // Récupérer tous les employés
   getAllEmployees: (): Employee[] => {
@@ -45,68 +79,109 @@ export const employeeService = {
     const employees = employeeService.getAllEmployees();
     if (!searchTerm.trim()) return employees;
 
-    // Gestion de la recherche par champs spécifiques
-    const fieldSearchRegex = /(\w+):([^:]+)/g;
+    // Regex améliorée pour capturer les tags avec des valeurs contenant des espaces
+    // Supporte: field:value, field:"value with spaces", field:'value with spaces'
+    const fieldSearchRegex = /(\w+):((?:"[^"]*")|(?:'[^']*')|(?:[^\s]+))/g;
     const fieldSearches = Array.from(searchTerm.matchAll(fieldSearchRegex));
 
     // Extraire les termes de recherche globaux (ceux qui ne sont pas dans un champ spécifique)
-    const globalSearchTerms = searchTerm
-      .replace(fieldSearchRegex, "") // Enlever les recherches par champs
+    let globalSearchText = searchTerm;
+
+    // Supprimer tous les tags de la chaîne de recherche pour obtenir les termes globaux
+    fieldSearches.forEach(([fullMatch]) => {
+      globalSearchText = globalSearchText.replace(fullMatch, "");
+    });
+
+    const globalSearchTerms = globalSearchText
       .toLowerCase()
       .trim()
       .split(/\s+/)
       .filter((term) => term.length > 0);
 
     return employees.filter((employee) => {
-      // Vérifier les recherches par champs spécifiques
+      // Vérifier les recherches par champs spécifiques (tags)
       const fieldSearchMatch = fieldSearches.every(([, field, value]) => {
-        const searchValue = value.toLowerCase().trim();
+        // Nettoyer la valeur en supprimant les guillemets si présents
+        let searchValue = value.toLowerCase().trim();
+        if (
+          (searchValue.startsWith('"') && searchValue.endsWith('"')) ||
+          (searchValue.startsWith("'") && searchValue.endsWith("'"))
+        ) {
+          searchValue = searchValue.slice(1, -1);
+        }
+
         const fieldName = field.toLowerCase();
 
         switch (fieldName) {
           case "firstname":
-            return employee.firstName.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.firstName.toLowerCase(),
+              searchValue
+            );
           case "lastname":
-            return employee.lastName.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.lastName.toLowerCase(),
+              searchValue
+            );
           case "department":
-            return employee.department.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.department.toLowerCase(),
+              searchValue
+            );
           case "city":
-            return employee.city.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.city.toLowerCase(),
+              searchValue
+            );
           case "state":
-            return employee.state.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.state.toLowerCase(),
+              searchValue
+            );
           case "zipcode":
-            return employee.zipCode.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.zipCode.toLowerCase(),
+              searchValue
+            );
           case "street":
-            return employee.street.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.street.toLowerCase(),
+              searchValue
+            );
           case "startdate":
-            return employee.startDate.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.startDate.toLowerCase(),
+              searchValue
+            );
           case "dateofbirth":
-            return employee.dateOfBirth.toLowerCase().includes(searchValue);
+            return matchesMultipleValues(
+              employee.dateOfBirth.toLowerCase(),
+              searchValue
+            );
           default:
             return false;
         }
       });
 
       // Vérifier les termes de recherche globaux
-      const globalSearchMatch = globalSearchTerms.every((term) => {
-        return (
-          employee.firstName.toLowerCase().includes(term) ||
-          employee.lastName.toLowerCase().includes(term) ||
-          employee.department.toLowerCase().includes(term) ||
-          employee.city.toLowerCase().includes(term) ||
-          employee.state.toLowerCase().includes(term) ||
-          employee.zipCode.toLowerCase().includes(term) ||
-          employee.street.toLowerCase().includes(term) ||
-          employee.startDate.toLowerCase().includes(term) ||
-          employee.dateOfBirth.toLowerCase().includes(term)
-        );
-      });
+      const globalSearchMatch =
+        globalSearchTerms.length === 0 ||
+        globalSearchTerms.every((term) => {
+          return (
+            matchesMultipleValues(employee.firstName.toLowerCase(), term) ||
+            matchesMultipleValues(employee.lastName.toLowerCase(), term) ||
+            matchesMultipleValues(employee.department.toLowerCase(), term) ||
+            matchesMultipleValues(employee.city.toLowerCase(), term) ||
+            matchesMultipleValues(employee.state.toLowerCase(), term) ||
+            matchesMultipleValues(employee.zipCode.toLowerCase(), term) ||
+            matchesMultipleValues(employee.street.toLowerCase(), term) ||
+            matchesMultipleValues(employee.startDate.toLowerCase(), term) ||
+            matchesMultipleValues(employee.dateOfBirth.toLowerCase(), term)
+          );
+        });
 
       // L'employé doit correspondre à la fois aux recherches par champs ET aux recherches globales
-      return (
-        fieldSearchMatch &&
-        (globalSearchTerms.length === 0 || globalSearchMatch)
-      );
+      return fieldSearchMatch && globalSearchMatch;
     });
   },
 };
