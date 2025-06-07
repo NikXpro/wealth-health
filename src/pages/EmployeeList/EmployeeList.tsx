@@ -11,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TablePagination } from "../../components/TablePagination/TablePagination";
 import { Employee, employeeService } from "../../services/employeeService";
-import { generateTestEmployees } from "../../utils/generateTestData";
 import "./EmployeeList.scss";
 
 const EmployeeList: React.FC = () => {
@@ -74,14 +73,14 @@ const EmployeeList: React.FC = () => {
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, pageSize]);
-
+  /*
   const handleGenerateTestData = () => {
     const testEmployees = generateTestEmployees(120);
     testEmployees.forEach((employee) => {
       employeeService.addEmployee(employee);
     });
     setEmployees(employeeService.getAllEmployees());
-  };
+  };*/
 
   return (
     <div className="employee-list-container">
@@ -89,7 +88,7 @@ const EmployeeList: React.FC = () => {
         <div className="employee-list__header">
           <h1>Current Employees</h1>
           <div className="employee-list__header-buttons">
-            <Button onClick={handleGenerateTestData}>Generate Test Data</Button>
+            {/*<Button onClick={handleGenerateTestData}>Generate Test Data</Button>*/}
             <Link to="/create-employee">
               <Button>Add New Employee</Button>
             </Link>
@@ -98,10 +97,12 @@ const EmployeeList: React.FC = () => {
 
         <div className="employee-list__controls">
           <div className="employee-list__show-entries">
-            <span>Show</span>
+            <label htmlFor="page-size-select">Show</label>
             <select
+              id="page-size-select"
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
+              aria-label="Nombre d'entrées à afficher par page"
             >
               <option value="10">10</option>
               <option value="25">25</option>
