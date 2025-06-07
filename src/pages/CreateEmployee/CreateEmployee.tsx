@@ -189,7 +189,12 @@ export function CreateEmployee() {
       <div className="add-employee">
         <div className="add-employee--header">
           <Link to="/" aria-label="Retour à la liste des employés">
-            <Button type="button" variant="ghost-icon" className="back-button">
+            <Button
+              type="button"
+              variant="ghost-icon"
+              className="back-button"
+              aria-label="Retour à la liste des employés"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
