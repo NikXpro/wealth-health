@@ -188,13 +188,14 @@ export function CreateEmployee() {
     <>
       <div className="add-employee">
         <div className="add-employee--header">
-          <Link to="/">
+          <Link to="/" aria-label="Retour à la liste des employés">
             <Button type="button" variant="ghost-icon" className="back-button">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
                 height="32"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   fill="currentColor"
@@ -324,7 +325,11 @@ export function CreateEmployee() {
             <Button type="submit" className="saveButton">
               Save
             </Button>
-            <Link to="/" className="linkCancel">
+            <Link
+              to="/"
+              className="linkCancel"
+              aria-label="Annuler et retourner à la liste des employés"
+            >
               <Button type="button" variant="ghost" className="cancelButton">
                 Cancel
               </Button>
